@@ -1,0 +1,32 @@
+class Game
+    def create_board #sets up tic tac toe gameboard
+    end
+
+    def play_round #plays round and alternates btw each player
+    end
+    
+    def winning_marks #keeps a running set of winning marks for the game
+    end
+
+    def put_players_symbol #displays players symbol on the board
+    end
+
+    def display_board #displays the board with player's symbol chooses mark
+    end
+
+    def game_over #determines if a player has won and returns winning message
+    end
+
+    def play_again #determines if players want to play again
+    end
+    
+end
+
+class Player
+    def choose_players_symbol #asks players what symbol they want default is X or O
+    end
+
+    def setup_players #gets players name and determines player one and two
+    end
+
+end
