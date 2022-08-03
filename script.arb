@@ -1,18 +1,54 @@
 class Game
-    def create_board #sets up tic tac toe gameboard
+    @@board = Array.new(3) {Array.new(3, "   ")}
+    attr_accessor :player1, :player2, :currentPlayer
+    
+    def initialize(player1, player2)
+        @player1 = player1
+        @player2 = player2
+        @current_player = player1
     end
 
+    def display_board #sets up tic tac toe gameboard
+        puts " #{@@board[0][0]} | #{@@board[0][1]} | #{@@board[0][2]}"
+        puts "-----------------"
+        puts " #{@@board[1][0]} | #{@@board[1][1]} | #{@@board[1][2]}"
+        puts "-----------------"
+        puts " #{@@board[2][0]} | #{@@board[2][1]} | #{@@board[2][2]}"
+    end
+
+    def change_player_turn
+        @current_player = @player1
+        if @player1 == @current_player
+            @current_player = @player2
+        else
+            @current_player = @player1
+        end
+    end
+           
     def play_round #plays round and alternates btw each player
+       puts "#{@current_player.name} turn"
+       
+       put_players_symbol
+
+       display_board
+       
     end
     
     def winning_marks #keeps a running set of winning marks for the game
+      
     end
 
     def put_players_symbol #displays players symbol on the board
+        puts "Enter row number (1-3):"
+        row = gets.chomp.to_i
+        puts "Enter column number (1-3):"
+        column = gets.chomp.to_i
+ 
+        @@board[row - 1][column - 1] = @current_player.symbol
     end
 
-    def display_board #displays the board with player's symbol chooses mark
-    end
+    # def display_board #displays the board with player's symbol chooses mark
+    # end
 
     def game_over #determines if a player has won and returns winning message
     end
@@ -23,10 +59,31 @@ class Game
 end
 
 class Player
-    def choose_players_symbol #asks players what symbol they want default is X or O
-    end
+    attr_accessor :name, :symbol #getter/setter methods
 
-    def setup_players #gets players name and determines player one and two
+    def initialize(name, symbol)
+        @name = name
+        @symbol = symbol
     end
-
 end
+
+# puts "Player, what's your symbol?"
+# symbol1 = gets.chomp()
+# puts "What your player name?"
+# name1 = gets.chomp()
+
+player1 = Player.new("K", "X")
+
+# puts "Player, what's your symbol?"
+# symbol2 = gets.chomp()
+# puts "What your player name?"
+# name2 = gets.chomp()
+
+player2 = Player.new("L", "O")
+
+#puts "Player: #{player.name} Symbol: #{player.symbol}"
+
+game = Game.new(player1, player2)
+#game.change_player_turn
+game.put_players_symbol
+game.display_board
