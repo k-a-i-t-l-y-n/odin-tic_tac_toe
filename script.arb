@@ -1,11 +1,15 @@
 class Game
     @@board = Array.new(3) {Array.new(3, "   ")}
-    attr_accessor :player1, :player2, :currentPlayer
+    attr_accessor :player1, :player2, :currentPlayer, :winner
     
     def initialize(player1, player2)
         @player1 = player1
         @player2 = player2
         @current_player = player1
+    end
+
+    def get_board
+        return @@board
     end
 
     def display_board #sets up tic tac toe gameboard
@@ -34,8 +38,24 @@ class Game
        
     end
     
-    def winning_marks #keeps a running set of winning marks for the game
-      
+    def has_winning_marks?(player) #keeps a running set of winning marks for the game
+
+        puts "Player Symbol: #{player.symbol}"
+        @@board.any? do|row| 
+            return true if row.all? {|mark| mark == player.symbol}
+        end
+        
+        (0..2).each |index|
+           return true if @@board.all? {|row| row[index] == player.symbol}
+        end
+
+        if(@@board[0][0] == @@board[1][1] && @@board[1][1] == @@board[2][2])
+            return true if @@board[1][1] == player.symbol
+        end
+
+        if(@@board[0][2] == @@board[1][1] && @@board[1][1] == @@board[2][0])
+            return true if @@board[1][1] == player.symbol
+        end
     end
 
     def put_players_symbol #displays players symbol on the board
@@ -86,4 +106,12 @@ player2 = Player.new("L", "O")
 game = Game.new(player1, player2)
 #game.change_player_turn
 game.put_players_symbol
+game.put_players_symbol
+game.put_players_symbol
+
 game.display_board
+
+p game.get_board
+
+answer = game.has_winning_marks?(player1)
+p answer
