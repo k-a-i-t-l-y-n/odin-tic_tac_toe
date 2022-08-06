@@ -1,5 +1,5 @@
 class Game
-    @@board = Array.new(3) {Array.new(3, "   ")}
+    @@board = Array.new(3) {Array.new(3, " ")}
     attr_accessor :player1, :player2, :currentPlayer, :winner
     
     def initialize(player1, player2)
@@ -8,44 +8,59 @@ class Game
         @current_player = player1
     end
 
-    def get_board
-        return @@board
-    end
-
     def display_board #sets up tic tac toe gameboard
         puts " #{@@board[0][0]} | #{@@board[0][1]} | #{@@board[0][2]}"
-        puts "-----------------"
+        puts "-----------"
         puts " #{@@board[1][0]} | #{@@board[1][1]} | #{@@board[1][2]}"
-        puts "-----------------"
+        puts "-----------"
         puts " #{@@board[2][0]} | #{@@board[2][1]} | #{@@board[2][2]}"
+        puts ""
     end
 
     def change_player_turn
-        @current_player = @player1
         if @player1 == @current_player
             @current_player = @player2
         else
             @current_player = @player1
         end
     end
+
+    def clear_board
+       @@board =  @@board.clear
+       @@board = Array.new(3) {Array.new(3, " ")}
+    end
            
     def play_round #plays round and alternates btw each player
-       puts "#{@current_player.name} turn"
-       
-       put_players_symbol
-
-       display_board
-       
+       for turn in 1..10 do 
+          if turn == 10
+            puts "Tied Game!!"
+            break
+          else
+            puts "------#{@current_player.name}'s turn-----" 
+            row = get_row
+            column = get_column
+            unless is_space_empty?(row, column)
+                row = get_row
+                column = get_column
+            end
+            put_players_symbol(row, column)
+            display_board
+            if has_winning_marks?(@current_player)
+                game_over
+                break
+            end
+            change_player_turn
+          end
+        end
+        play_again
     end
     
     def has_winning_marks?(player) #keeps a running set of winning marks for the game
-
-        puts "Player Symbol: #{player.symbol}"
         @@board.any? do|row| 
             return true if row.all? {|mark| mark == player.symbol}
         end
-        
-        (0..2).each |index|
+
+        (0..2).each do |index|
            return true if @@board.all? {|row| row[index] == player.symbol}
         end
 
@@ -58,22 +73,66 @@ class Game
         end
     end
 
-    def put_players_symbol #displays players symbol on the board
+    def get_row
         puts "Enter row number (1-3):"
         row = gets.chomp.to_i
+        unless is_valid?(row)
+            puts "Enter row number (1-3):"
+            row = gets.chomp.to_i
+        end
+        puts ""
+        return row
+    end
+
+    def get_column
         puts "Enter column number (1-3):"
         column = gets.chomp.to_i
- 
+        unless is_valid?(column)
+            puts "Enter column number (1-3):"
+            column = gets.chomp.to_i
+        end
+        puts ""
+        return column
+    end
+
+    def put_players_symbol(row, column) #displays players symbol on the board
         @@board[row - 1][column - 1] = @current_player.symbol
     end
 
-    # def display_board #displays the board with player's symbol chooses mark
-    # end
+    def is_valid?(value)
+        if value.is_a?(Integer) && value.between?(1,3)
+            return true
+        else
+            puts "Invalid! Choose a number 1-3."
+            return false
+        end
+    end
+        
+    def is_space_empty?(row, column) #checks users' answers for putting symbols
+        if @@board[row-1][column-1] == " "
+            return true
+        else
+            puts "Space is taken! Choose again."
+            return false
+        end
+    end
 
     def game_over #determines if a player has won and returns winning message
+        puts "---Game Over -- #{@current_player.name} wins!!"
+        puts ""
     end
 
     def play_again #determines if players want to play again
+        puts "Do you want to play again? Yes or No"
+        response = gets.chomp.downcase
+        if response == "yes"
+            puts "Lets play again. This time the winner goes first."
+            clear_board
+            puts ""
+            play_round
+        else
+            puts "Thanks for playing. Byeee"
+        end
     end
     
 end
@@ -87,31 +146,26 @@ class Player
     end
 end
 
-# puts "Player, what's your symbol?"
-# symbol1 = gets.chomp()
-# puts "What your player name?"
-# name1 = gets.chomp()
+puts "What your player name?"
+name1 = gets.chomp()
+puts "Player, what's your symbol?"
+symbol1 = gets.chomp()
 
-player1 = Player.new("K", "X")
+player1 = Player.new(name1, symbol1)
 
-# puts "Player, what's your symbol?"
-# symbol2 = gets.chomp()
-# puts "What your player name?"
-# name2 = gets.chomp()
+puts "What your player name?"
+name2 = gets.chomp()
+puts "Player, what's your symbol?"
+symbol2 = gets.chomp()
 
-player2 = Player.new("L", "O")
+player2 = Player.new(name2, symbol2)
 
 #puts "Player: #{player.name} Symbol: #{player.symbol}"
 
 game = Game.new(player1, player2)
-#game.change_player_turn
-game.put_players_symbol
-game.put_players_symbol
-game.put_players_symbol
-
-game.display_board
-
-p game.get_board
-
-answer = game.has_winning_marks?(player1)
-p answer
+game.play_round
+# game.put_players_symbol
+# game.put_players_symbol
+# game.put_players_symbol
+# game.display_board
+#puts game.has_winning_marks?(player1)
